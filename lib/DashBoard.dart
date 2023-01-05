@@ -140,7 +140,7 @@ class _DashBordState extends State<DashBord> {
             ),
         ),
         bottomNavigationBar: GNav(
-            padding: EdgeInsets.only(left: 20, right: 20,bottom: 10),
+            padding: EdgeInsets.only(left: 10, right: 10,bottom: 10),
 
 
           onTabChange: (val) {

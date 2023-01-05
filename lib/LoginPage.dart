@@ -48,35 +48,36 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Scaffold(
           backgroundColor: Colors.white,
-            body: Column(
-              children: <Widget>[
-                SizedBox(width: 70,height: 70,),
-                Center(
-                    child: Icon(Icons.login_outlined,size: 70,)
-                ),
-                SizedBox(height: 20,),
-                Text('Login',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,fontSize: 20,
-                ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+            body: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(width: 70,height: 70,),
+                  Center(
+                      child: Icon(Icons.login_outlined,size: 70,)
+                  ),
+                  SizedBox(height: 20,),
+                  Text('Login',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,fontSize: 20,
+                  ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
 
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _emailControler,
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: _emailControler,
 
-                    decoration: InputDecoration(
-                      label: Text('Email'),
-                      icon: Icon(Icons.mail_lock_outlined),
-                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
+                      decoration: InputDecoration(
+                        label: Text('Email'),
+                        icon: Icon(Icons.mail_lock_outlined),
+                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                          focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
 
 
-                    ),
+                      ),
     validator: (value) {
     if (value == null || value.trim().isEmpty) {
     return 'Please enter your email address';
@@ -89,128 +90,130 @@ class _LoginPageState extends State<LoginPage> {
     return null;
     },
 
+                    ),
                   ),
-                ),
-                SizedBox(height: 20,),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    obscureText: _isObscure,
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      label: Text('Password',),
-                      icon: Icon(Icons.password_outlined,),
-                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      suffixIcon: IconButton(
-                        icon: Icon(_isObscure ? Icons.visibility :Icons.visibility_off),
-                        onPressed: () {
-
-                          setState(() { //refresh UI
-                            if(_isObscure){ //if passenable == true, make it false
-                              _isObscure = false;
-                            }else{
-                              _isObscure = true; //if passenable == false, make it true
-                            }
-                          });
-                      },
-                      )
-
-
-
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Required";
-                      }
-                      if (value.length < 6) {
-                        return "Password must be atleast 6 characters long";
-                      }
-                      if (value.length > 20) {
-                        return "Password must be less than 20 characters";
-                      }
-                      if (!value.contains(RegExp(r'[0-9]'))) {
-                        return "Password must contain a number";
-                      }
-                    },
-                  ),
-                ),
-
-
-                SizedBox(
-                  height: 1,
-                ),
-          Container(
-            margin: EdgeInsets.all(0),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black),
-              ),
-              child: Text('LogIn', style: TextStyle(fontSize: 20.0),),
-
-
-              onPressed: () async{
-                if (formkey.currentState!.validate()) {
-                  setState(() {
-                    isLoading =true;
-                  });
-                  try
-                  {
-                    UserCredential userCredential = await FirebaseAuth
-                        .instance
-                        .signInWithEmailAndPassword(
-                        email: _emailControler.text.trim(),
-                        password: _passwordController.text.trim());
-                    if (userCredential.user != null) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DashBord()));
-                    }
-
-                  }
-                  on FirebaseAuthException catch(e){
-                    if(e.code=='user-not-found'){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('user not found')));
-                    }
-
-                  }
-
-                }
-              },
-            ),
-          ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('you dont have an account?',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUp(),));
-                      },
-                      child: Text('signup'),
-                    ),
-
-                  ],
-
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPassword(),));
-                  },
-                  child: Text('Forgot password?'),
-                ),
                   SizedBox(height: 20,),
-                isLoading? SpinKitCircle(color:Colors.black,size: 30,) : SizedBox(),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      obscureText: _isObscure,
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        
+                        label: Text('Password',),
+                        icon: Icon(Icons.password_outlined,),
+                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                          focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        suffixIcon: IconButton(
+                          icon: Icon(_isObscure ? Icons.visibility :Icons.visibility_off),
+                          onPressed: () {
 
-              ],
+                            setState(() { //refresh UI
+                              if(_isObscure){ //if passenable == true, make it false
+                                _isObscure = false;
+                              }else{
+                                _isObscure = true; //if passenable == false, make it true
+                              }
+                            });
+                        },
+                        )
+
+
+
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Required";
+                        }
+                        if (value.length < 6) {
+                          return "Password must be atleast 6 characters long";
+                        }
+                        if (value.length > 20) {
+                          return "Password must be less than 20 characters";
+                        }
+                        if (!value.contains(RegExp(r'[0-9]'))) {
+                          return "Password must contain a number";
+                        }
+                      },
+                    ),
+                  ),
+
+
+                  SizedBox(
+                    height: 1,
+                  ),
+          Container(
+              margin: EdgeInsets.all(0),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.black),
+                ),
+                child: Text('LogIn', style: TextStyle(fontSize: 20.0),),
+
+
+                onPressed: () async{
+                  if (formkey.currentState!.validate()) {
+                    setState(() {
+                      isLoading =true;
+                    });
+                    try
+                    {
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .signInWithEmailAndPassword(
+                          email: _emailControler.text.trim(),
+                          password: _passwordController.text.trim());
+                      if (userCredential.user != null) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DashBord()));
+                      }
+
+                    }
+                    on FirebaseAuthException catch(e){
+                      if(e.code=='user-not-found'){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('user not found')));
+                      }
+
+                    }
+
+                  }
+                },
+              ),
+          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('you dont have an account?',
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUp(),));
+                        },
+                        child: Text('signup'),
+                      ),
+
+                    ],
+
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPassword(),));
+                    },
+                    child: Text('Forgot password?'),
+                  ),
+                    SizedBox(height: 20,),
+                  isLoading? SpinKitCircle(color:Colors.black,size: 30,) : SizedBox(),
+
+                ],
+              ),
             ),
         ),
       ),
