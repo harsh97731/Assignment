@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loginsin/LoginPage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,9 +27,22 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.yellow,
-        child:FlutterLogo(size:MediaQuery.of(context).size.height)
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.ac_unit_outlined,color: Colors.black,size: 100,),
+            SizedBox(height: 20,),
+            SpinKitWave(
+              color: Colors.black,
+              size: 30,
+            )
+          ],
+        ),
+      ),
     );
+
+
   }
 }

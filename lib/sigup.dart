@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loginsin/DashBoard.dart';
 import 'package:loginsin/LoginPage.dart';
 
 class SignUp extends StatefulWidget {
-
-
   @override
   State<SignUp> createState() => _SignUpState();
 }
@@ -13,7 +12,8 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final TextEditingController _pass = TextEditingController();
   final TextEditingController _confirmPass = TextEditingController();
-  bool isShowPass = false;
+  final TextEditingController _emailController = TextEditingController();
+  bool _isObscure = true;
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -24,27 +24,37 @@ class _SignUpState extends State<SignUp> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(width: 70,height: 70,),
-              Center(
-                  child: Icon(Icons.login_outlined,size: 70,)
+              SizedBox(
+                width: 70,
+                height: 70,
               ),
-              SizedBox(height: 20,),
-              Text('Sign Up',
+              Center(
+                  child: Icon(
+                Icons.login_outlined,
+                size: 70,
+              )),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Sign Up',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
-
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _emailController,
                   decoration: InputDecoration(
+                      label: Text('Email'),
                       icon: Icon(Icons.mail_lock_outlined),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
-
-
-                  ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black26)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black26))),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email address';
@@ -58,35 +68,54 @@ class _SignUpState extends State<SignUp> {
                   },
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.password_outlined,),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
-
-
-                  ),
-    controller: _pass,
-    validator: (value) {
-    if (value!.isEmpty) {
-    return "Required";
-    }
-    if (value.length < 6) {
-    return "Password must be atleast 6 characters long";
-    }
-    if (value.length > 20) {
-    return "Password must be less than 20 characters";
-    }
-    if (!value.contains(RegExp(r'[0-9]'))) {
-    return "Password must contain a number";
-    }
-
-
-                  }
-                ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    obscureText: _isObscure,
+                    decoration: InputDecoration(
+                        label: Text('Password'),
+                        icon: Icon(
+                          Icons.password_outlined,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black26)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black26)),
+                        suffixIcon: IconButton(
+                            icon: Icon(_isObscure
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                //refresh UI
+                                if (_isObscure) {
+                                  //if passenable == true, make it false
+                                  _isObscure = false;
+                                } else {
+                                  _isObscure =
+                                      true; //if passenable == false, make it true
+                                }
+                              });
+                            })),
+                    controller: _pass,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Required";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be atleast 6 characters long";
+                      }
+                      if (value.length > 20) {
+                        return "Password must be less than 20 characters";
+                      }
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return "Password must contain a number";
+                      }
+                    }),
               ),
               SizedBox(
                 height: 1,
@@ -94,53 +123,60 @@ class _SignUpState extends State<SignUp> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.password_outlined,),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
-
-
-                  ),
-    controller: _confirmPass,
-    validator: (value) {
-    if (value!.isEmpty) {
-    return "Required";
-    }
-    if (value.length < 6) {
-    return "Password must be atleast 6 characters long";
-    }
-    if (value.length > 20) {
-    return "Password must be less than 20 characters";
-    }
-    if (!value.contains(RegExp(r'[0-9]'))) {
-    return "Password must contain a number";
-    }
-    if(value!=_pass.text){
-      return 'no match';
-    }else{
-      return null;
-    }
-                  }
-                ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                        label: Text('Confirm Password'),
+                        icon: Icon(
+                          Icons.password_outlined,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black26)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black26))),
+                    controller: _confirmPass,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Required";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be atleast 6 characters long";
+                      }
+                      if (value.length > 20) {
+                        return "Password must be less than 20 characters";
+                      }
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return "Password must contain a number";
+                      }
+                      if (value != _pass.text) {
+                        return 'no match';
+                      } else {
+                        return null;
+                      }
+                    }),
               ),
-
               Container(
                 margin: EdgeInsets.all(0),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black),
                   ),
-                  child: Text('LogIn', style: TextStyle(fontSize: 20.0),),
-
-
-                  onPressed: () {
+                  child: Text(
+                    'Sign Up',
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  onPressed: () async {
                     if (formkey.currentState!.validate()) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DashBord()
-                          )
-                      );
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .createUserWithEmailAndPassword(
+                              email: _emailController.text.trim(),
+                              password: _pass.text.trim());
+                      if (userCredential.user != null) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      }
                     }
                   },
                 ),
@@ -148,21 +184,24 @@ class _SignUpState extends State<SignUp> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('you already have an account?',
+                  Text(
+                    'you already have an account?',
                     style: TextStyle(
                       color: Colors.black54,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(),));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginPage(),
+                          ));
                     },
                     child: Text('Login'),
                   )
                 ],
-
               ),
-
             ],
           ),
         ),
