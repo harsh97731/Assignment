@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loginsin/DashBoard.dart';
 import 'package:loginsin/ForgotPassword.dart';
 import 'package:loginsin/sigup.dart';
@@ -22,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   bool _isObscure = true;
+  bool isLoading =false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,8 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       label: Text('Email'),
                       icon: Icon(Icons.mail_lock_outlined),
+                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26))
 
@@ -97,6 +101,8 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       label: Text('Password',),
                       icon: Icon(Icons.password_outlined,),
+                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                       suffixIcon: IconButton(
@@ -148,6 +154,9 @@ class _LoginPageState extends State<LoginPage> {
 
               onPressed: () async{
                 if (formkey.currentState!.validate()) {
+                  setState(() {
+                    isLoading =true;
+                  });
                   try
                   {
                     UserCredential userCredential = await FirebaseAuth
@@ -197,7 +206,9 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPassword(),));
                   },
                   child: Text('Forgot password?'),
-                )
+                ),
+                  SizedBox(height: 20,),
+                isLoading? SpinKitCircle(color:Colors.black,size: 30,) : SizedBox(),
 
               ],
             ),

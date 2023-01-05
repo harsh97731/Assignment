@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
@@ -22,25 +21,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     super.dispose();
   }
 
-  Future <void>passwardReset() async {
-    try{
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: _emailControler.text.trim());
-      showDialog(context: context  , builder: (context) {
-        return AlertDialog(
-          content: Text('Password reset link send! check your email'),
+  Future<void> passwardReset() async {
+    if (formkey.currentState!.validate()) {
+      try {
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: _emailControler.text.trim());
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text('Password reset link send! check your email'),
+            );
+          },
         );
-      },);
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      showDialog(context: context  , builder: (context) {
-        return AlertDialog(
-          content: Text('e'),
+      } on FirebaseAuthException catch (e) {
+        print(e);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text('not registerd'),
+            );
+          },
         );
-      },);
+      }
     }
   }
-
 
   //bool _isObscure = true;
   @override
@@ -107,6 +113,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   decoration: InputDecoration(
                       label: Text('Reset email'),
                       icon: Icon(Icons.mail_lock_outlined),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black26)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black26)),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black26)),
                       focusedBorder: OutlineInputBorder(

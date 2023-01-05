@@ -51,6 +51,8 @@ class _SignUpState extends State<SignUp> {
                   decoration: InputDecoration(
                       label: Text('Email'),
                       icon: Icon(Icons.mail_lock_outlined),
+                      errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                      focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black26)),
                       focusedBorder: OutlineInputBorder(
@@ -81,6 +83,8 @@ class _SignUpState extends State<SignUp> {
                         icon: Icon(
                           Icons.password_outlined,
                         ),
+                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black26)),
                         focusedBorder: OutlineInputBorder(
@@ -129,6 +133,8 @@ class _SignUpState extends State<SignUp> {
                         icon: Icon(
                           Icons.password_outlined,
                         ),
+                        errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
+                        focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26)),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black26)),
                         focusedBorder: OutlineInputBorder(

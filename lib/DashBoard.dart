@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:loginsin/LoginPage.dart';
 
 class DashBord extends StatefulWidget {
@@ -110,7 +112,11 @@ class _DashBordState extends State<DashBord> {
                         backgroundColor: Colors.white,
                         title: Text("Are you sure ?"),
                         actions: [
-                          TextButton(onPressed: (){
+                          TextButton(onPressed: ()async{
+                            if (FirebaseAuth.instance.currentUser !=
+                                null) {
+                              await FirebaseAuth.instance.signOut();
+                            }
                             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginPage(),), (route) => false);
                           }, child: Text("yes")),
                           TextButton(onPressed: (){
@@ -133,40 +139,25 @@ class _DashBordState extends State<DashBord> {
           title: Text('Dashboard',
             ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: index,
-          onTap: (val) {
+        bottomNavigationBar: GNav(
+            padding: EdgeInsets.only(left: 20, right: 20,bottom: 10),
+
+
+          onTabChange: (val) {
+            currentIndex: index;
 
             setState(() {
               index=val;
             });
           },
 
-
-          selectedItemColor: Colors.black,
-         unselectedItemColor: Colors.grey,
-         // backgroundColor: Colors.black,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Home'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Vendor'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list),
-                label: 'List'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.category_outlined),
-                label: 'Catagory'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.more),
-                label: 'Menu'
-            ),
+          gap: 2,
+          tabs: const[
+            GButton(icon: Icons.home,text: 'Home',),
+            GButton(icon: Icons.people,text: 'Vendors',),
+            GButton(icon: Icons.list,text: 'List',),
+            GButton(icon: Icons.category,text: 'Category',),
+            GButton(icon: Icons.menu_open,text: 'Menu',),
           ],
         ),
       ),
