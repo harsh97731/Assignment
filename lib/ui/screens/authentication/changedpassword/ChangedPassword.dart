@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loginsin/DashBoard.dart';
-import 'package:loginsin/LoginPage.dart';
+import 'package:loginsin/ui/screens/home/DashBoard.dart';
+import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
 
 class ChangedPassword extends StatefulWidget {
   const ChangedPassword({Key? key}) : super(key: key);

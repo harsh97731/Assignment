@@ -261,6 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   onPressed: ()async{
                     await Google_Sign_In().signInWithGoogle();
+
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashBord(),));
 
                   },
