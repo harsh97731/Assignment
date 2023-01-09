@@ -1,10 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:loginsin/ChangedPassword.dart';
-import 'package:loginsin/Google_Sign_In.dart';
-import 'package:loginsin/LoginPage.dart';
+import 'package:loginsin/resources/color_manager.dart';
+import 'package:loginsin/ui/screens/authentication/changedpassword/ChangedPassword.dart';
+import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
 
 class DashBord extends StatefulWidget {
   const DashBord({Key? key}) : super(key: key);
@@ -16,6 +17,8 @@ class DashBord extends StatefulWidget {
 class _DashBordState extends State<DashBord> {
   int index = 0;
   String? UserEmail = FirebaseAuth.instance.currentUser?.email;
+  final CarouselController carouselController = CarouselController();
+  int currentIndex = 0;
 
   List<Widget> Screens = [
     Center(child: Text("My home page")),
@@ -56,7 +59,6 @@ class _DashBordState extends State<DashBord> {
         }
       },
       child: Scaffold(
-        body: Screens[index],
         drawer: Drawer(
           child: ListView(
             padding: const EdgeInsets.all(0),
@@ -137,10 +139,6 @@ class _DashBordState extends State<DashBord> {
                           actions: [
                             TextButton(
                                 onPressed: () async {
-                                  if (FirebaseAuth.instance.currentUser !=
-                                      null) {
-                                    await Google_Sign_In().signOut();
-                                  }
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -165,12 +163,24 @@ class _DashBordState extends State<DashBord> {
             ],
           ),
         ),
+
         appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text(
-            'Dashboard',
-          ),
+          backgroundColor: ColorManager.primaryUi,
+
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(onPressed: (){}, icon: Icon(
+                  Icons.location_on_outlined
+                )),
+              ],
+            )
+          ],
         ),
+
+
+
         bottomNavigationBar: GNav(
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           onTabChange: (val) {
@@ -186,22 +196,32 @@ class _DashBordState extends State<DashBord> {
             GButton(
               icon: Icons.home,
               text: 'Home',
+              textColor: Colors.green,
+              iconColor: Colors.green,
             ),
             GButton(
               icon: Icons.people,
               text: 'Vendors',
+              textColor: Colors.green,
+              iconColor: Colors.green,
             ),
             GButton(
               icon: Icons.list,
               text: 'List',
+              textColor: Colors.green,
+              iconColor: Colors.green,
             ),
             GButton(
               icon: Icons.category,
               text: 'Category',
+              textColor: Colors.green,
+              iconColor: Colors.green,
             ),
             GButton(
               icon: Icons.menu_open,
               text: 'Menu',
+              textColor: Colors.green,
+              iconColor: Colors.green,
             ),
           ],
         ),

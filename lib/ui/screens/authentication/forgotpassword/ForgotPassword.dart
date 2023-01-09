@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loginsin/resources/color_manager.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -93,6 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               Center(
                   child: Icon(
                 Icons.login_outlined,
+                color: ColorManager.primaryUi,
                 size: 70,
               )),
               SizedBox(
@@ -101,6 +103,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               Text(
                 'Forgot Password',
                 style: TextStyle(
+                  color: ColorManager.primaryUi,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
@@ -144,7 +147,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 margin: EdgeInsets.all(0),
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                    backgroundColor: MaterialStateProperty.all(ColorManager.primaryUi),
                   ),
                   child: Text(
                     'Reset',

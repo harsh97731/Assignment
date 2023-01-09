@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loginsin/DashBoard.dart';
-import 'package:loginsin/LoginPage.dart';
+import 'package:loginsin/resources/color_manager.dart';
+import 'package:loginsin/ui/screens/home/DashBoard.dart';
+import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -164,7 +165,7 @@ class _SignUpState extends State<SignUp> {
                 margin: EdgeInsets.all(0),
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                    backgroundColor: MaterialStateProperty.all(ColorManager.primaryUi),
                   ),
                   child: Text(
                     'Sign Up',

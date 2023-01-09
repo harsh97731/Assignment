@@ -4,3 +4,4 @@ class StringManager {
   static const String internalServerError = 'Internal Server error. Please try later';
   static const String internetConnectionError = 'Please check your internet connection.';
 }
+

@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:loginsin/DashBoard.dart';
-import 'package:loginsin/ForgotPassword.dart';
-import 'package:loginsin/Google_Sign_In.dart';
+import 'package:loginsin/resources/color_manager.dart';
+import 'package:loginsin/ui/screens/home/DashBoard.dart';
+import 'package:loginsin/ui/screens/authentication/forgotpassword/ForgotPassword.dart';
 import 'package:loginsin/sigup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(false),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: ColorManager.primaryUi,
                               foregroundColor: Colors.white),
                           child: Text('NO')),
                       ElevatedButton(
@@ -176,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                   margin: EdgeInsets.all(0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.black),
+                      backgroundColor: MaterialStateProperty.all(ColorManager.primaryUi),
                     ),
                     child: Text(
                       'LogIn',
@@ -249,23 +249,7 @@ class _LoginPageState extends State<LoginPage> {
                         size: 30,
                       )
                     : SizedBox(),
-                ElevatedButton(
 
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.black)
-                    ,
-                  ),
-                  child: Text(
-                    'Login with Google',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  onPressed: ()async{
-                    await Google_Sign_In().signInWithGoogle();
-
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashBord(),));
-
-                  },
-                ),
               ],
             ),
           ),

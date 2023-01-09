@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:loginsin/DashBoard.dart';
-import 'package:loginsin/LoginPage.dart';
+import 'package:loginsin/ui/screens/home/DashBoard.dart';
+import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
