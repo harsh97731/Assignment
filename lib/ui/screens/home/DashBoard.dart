@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,19 @@ class DashBord extends StatefulWidget {
 }
 
 class _DashBordState extends State<DashBord> {
+  var firestoreDB = FirebaseFirestore.instance.collection('list').snapshots();
   int index = 0;
+  int counter = 0;
   String? UserEmail = FirebaseAuth.instance.currentUser?.email;
   final CarouselController carouselController = CarouselController();
+  final _listName = TextEditingController();
   int currentIndex = 0;
+  addData() {
+    Map<String, dynamic> data = {'name': _listName.text, 'id': '$counter'};
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('list');
+    collectionReference.add(data);
+  }
 
   List<Widget> Screens = [
     Center(child: Text("My home page")),
@@ -26,6 +36,11 @@ class _DashBordState extends State<DashBord> {
     Center(child: Text("My home page")),
     Center(child: Text("My home page")),
     Center(child: Text("My home page"))
+  ];
+  List imageList = [
+    {"id": 1, "image_path": 'assets/images/food1.jpeg'},
+    {"id": 2, "image_path": 'assets/images/food2.jpeg'},
+    {"id": 3, "image_path": 'assets/images/food3.jpeg'},
   ];
   @override
   Widget build(BuildContext context) {
@@ -59,6 +74,193 @@ class _DashBordState extends State<DashBord> {
         }
       },
       child: Scaffold(
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                InkWell(
+                  onTap: () {
+                    print(currentIndex);
+                  },
+                  child: CarouselSlider(
+                    items: imageList
+                        .map(
+                          (item) => Image.asset(
+                            item["image_path"],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        )
+                        .toList(),
+                    carouselController: carouselController,
+                    options: CarouselOptions(
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        aspectRatio: 2,
+                        viewportFraction: 1,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        }),
+                  ),
+                ),
+                Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: imageList.asMap().entries.map((entry) {
+                      print(entry);
+                      print(entry.key);
+                      return GestureDetector(
+                        onTap: () =>
+                            carouselController.animateToPage(entry.key),
+                        child: Container(
+                          width: currentIndex == entry.key ? 17 : 7,
+                          height: 7.0,
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 3.0,
+                          ),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                              color: currentIndex == entry.key
+                                  ? ColorManager.primaryUi
+                                  : Colors.lightGreenAccent),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: TextFormField(
+                controller: _listName,
+                decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                            width: 2, color: ColorManager.primaryUi)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                            width: 2, color: ColorManager.primaryUi)),
+                    hintText: "Add list name",
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: ColorManager.primaryUi,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              counter++;
+                              addData();
+                            },
+                            child: Icon(
+                              Icons.add,
+                              color: ColorManager.white,
+                            ),
+                          )),
+                    )),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'My shopping lists',
+                    style: TextStyle(
+                        color: ColorManager.primaryUi,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      FirebaseFirestore.instance.collection('list').snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return CircularProgressIndicator();
+                    print("fsta : ${snapshot.data?.docs}");
+                    return ListView.builder(
+                        itemCount: snapshot.data?.docs.length,
+                        itemBuilder: (context, int index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 1,vertical: 1),
+                            child: Card(
+                              child: Container(
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 20, ),
+                                  child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot.data?.docs[index]['name'] ??
+                                                '',
+                                            style: TextStyle(color: Colors.black),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            snapshot.data?.docs[index]
+                                                    ['item_name'] ??
+                                                '',
+                                            style: TextStyle(
+                                                color: ColorManager.primaryUi,fontWeight: FontWeight.bold),
+
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 10,left: 20),
+                                          child: Text("hfgy"),
+                                        ),
+                                        height: 100,
+                                        width: 110,
+                                        decoration: BoxDecoration(
+                                          color: Colors.lightGreenAccent,
+                                          borderRadius: BorderRadius.only(bottomRight: Radius.zero)
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+                  }),
+            ),
+            Stack(
+              children: [],
+            )
+          ],
+        ),
         drawer: Drawer(
           child: ListView(
             padding: const EdgeInsets.all(0),
@@ -163,24 +365,18 @@ class _DashBordState extends State<DashBord> {
             ],
           ),
         ),
-
         appBar: AppBar(
           backgroundColor: ColorManager.primaryUi,
-
           actions: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(onPressed: (){}, icon: Icon(
-                  Icons.location_on_outlined
-                )),
+                IconButton(
+                    onPressed: () {}, icon: Icon(Icons.location_on_outlined)),
               ],
             )
           ],
         ),
-
-
-
         bottomNavigationBar: GNav(
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           onTabChange: (val) {
