@@ -8,6 +8,11 @@ class ColorManager {
   static Color primaryOpacity70 = HexColor.fromHex("#B3ED9728");
   static Color primaryUi = HexColor.fromHex("#1E8040");
   static Color dropShadwo = HexColor.fromHex("#0000007A");
+  static Color dashContainer = HexColor.fromHex("#F5FFE4");
+  static Color description = HexColor.fromHex("#B11F1F");
+  static Color discountColor = HexColor.fromHex("#8BC53F");
+
+
 
 
   static Color darkPrimary = HexColor.fromHex("#d17d11");

@@ -1,12 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:loginsin/resources/color_manager.dart';
 import 'package:loginsin/ui/screens/authentication/changedpassword/ChangedPassword.dart';
 import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
+import 'package:loginsin/ui/screens/home/totals_items.dart';
 
 class DashBord extends StatefulWidget {
   const DashBord({Key? key}) : super(key: key);
@@ -24,11 +24,13 @@ class _DashBordState extends State<DashBord> {
   final _listName = TextEditingController();
   int currentIndex = 0;
   addData() {
-    Map<String, dynamic> data = {'name': _listName.text, 'id': '$counter'};
+    Map<String, dynamic> data = {'name': _listName.text,'quantity' : 0,'total':0};
+
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('list');
     collectionReference.add(data);
   }
+
 
   List<Widget> Screens = [
     Center(child: Text("My home page")),
@@ -46,6 +48,7 @@ class _DashBordState extends State<DashBord> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+
         final value = await showDialog<bool>(
             context: context,
             builder: (context) {
@@ -199,55 +202,87 @@ class _DashBordState extends State<DashBord> {
                       FirebaseFirestore.instance.collection('list').snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return CircularProgressIndicator();
-                    print("fsta : ${snapshot.data?.docs}");
+                    //print("fsta : ${snapshot.data?.docs}");
                     return ListView.builder(
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, int index) {
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 1,vertical: 1),
-                            child: Card(
-                              child: Container(
-                                height: 100,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20, ),
-                                  child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            snapshot.data?.docs[index]['name'] ??
-                                                '',
-                                            style: TextStyle(color: Colors.black),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            snapshot.data?.docs[index]
-                                                    ['item_name'] ??
-                                                '',
-                                            style: TextStyle(
-                                                color: ColorManager.primaryUi,fontWeight: FontWeight.bold),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 1, vertical: 1),
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => TotalItems(),));
+                              },
+                              child: Card(
+                                child: Container(
+                                  height: 100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 20,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              snapshot.data?.docs[index]
+                                                      ['name'].toString() ?? '',
+                                              style:
+                                                  TextStyle(color: Colors.black),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            // Text(
+                                            //   snapshot.data?.docs[index]
+                                            //           ['item_name'].toString() ??
+                                            //       '',
+                                            //   style: TextStyle(
+                                            //       color: ColorManager.primaryUi,
+                                            //       fontWeight: FontWeight.bold),
+                                            // ),//item name
+                                          ],
+                                        ),
+                                        Container(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 10,),
+                                                child: Container(
+                                                  width: 100,
+                                                  height: 100,
+                                                  color: ColorManager.dashContainer,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Text("totals",style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400)),
+                                                            SizedBox(width: 5,),
+                                                            Text(snapshot.data?.docs[index]['quantity'].toString() ?? ''),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 3,),
+                                                          Text(snapshot.data?.docs[index]['total'].toString() ?? ''),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
 
-                                          ),
-                                        ],
-                                      ),
-                                      Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(top: 10,left: 20),
-                                          child: Text("hfgy"),
-                                        ),
-                                        height: 100,
-                                        width: 110,
-                                        decoration: BoxDecoration(
-                                          color: Colors.lightGreenAccent,
-                                          borderRadius: BorderRadius.only(bottomRight: Radius.zero)
-                                        ),
-                                      )
-                                    ],
+                                            ],
+                                          )
+
+                                        ), //totals cost
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
