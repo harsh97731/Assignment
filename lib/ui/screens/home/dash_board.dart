@@ -1,12 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:loginsin/resources/color_manager.dart';
-import 'package:loginsin/ui/screens/authentication/changedpassword/ChangedPassword.dart';
-import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
-import 'package:loginsin/ui/screens/home/totals_items.dart';
+import 'package:loginsin/resources/string_manager.dart';
+import 'package:loginsin/ui/screens/home/product_list.dart';
+
+import '../authentication/changedpassword/ChangedPassword.dart';
+import '../authentication/login/LoginPage.dart';
 
 class DashBord extends StatefulWidget {
   const DashBord({Key? key}) : super(key: key);
@@ -16,28 +19,38 @@ class DashBord extends StatefulWidget {
 }
 
 class _DashBordState extends State<DashBord> {
-  var firestoreDB = FirebaseFirestore.instance.collection('list').snapshots();
+  //var firestoreDB = FirebaseFirestore.instance.collection('Wishlist').snapshots();
   int index = 0;
   int counter = 0;
-  String? UserEmail = FirebaseAuth.instance.currentUser?.email;
+
+  final String? _username = FirebaseAuth.instance.currentUser?.displayName;
+  final String? user_email = FirebaseAuth.instance.currentUser?.email;
+  final String? user_id = FirebaseAuth.instance.currentUser?.uid;
+
   final CarouselController carouselController = CarouselController();
   final _listName = TextEditingController();
   int currentIndex = 0;
+
   addData() {
-    Map<String, dynamic> data = {'name': _listName.text,'quantity' : 0,'total':0};
+    Map<String, dynamic> data = {
+      'name': _listName.text,
+      'quantity': 0,
+      'total': 0,
+      'uid': user_id,
+    };
+
 
     CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('list');
+        FirebaseFirestore.instance.collection('Wishlist');
     collectionReference.add(data);
   }
 
-
-  List<Widget> Screens = [
-    Center(child: Text("My home page")),
-    Center(child: Text("My home pa")),
-    Center(child: Text("My home page")),
-    Center(child: Text("My home page")),
-    Center(child: Text("My home page"))
+  List<Widget> screens = [
+    const Center(child: Text("My home page")),
+    const Center(child: Text("My home pa")),
+    const Center(child: Text("My home page")),
+    const Center(child: Text("My home page")),
+    const Center(child: Text("My home page"))
   ];
   List imageList = [
     {"id": 1, "image_path": 'assets/images/food1.jpeg'},
@@ -48,26 +61,25 @@ class _DashBordState extends State<DashBord> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
         final value = await showDialog<bool>(
             context: context,
             builder: (context) {
               return AlertDialog(
-                  title: Text('Alert'),
-                  content: Text('Do you want to exit app?'),
+                  title: const Text('Alert'),
+                  content: const Text('Do you want to exit app?'),
                   actions: [
                     ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(false),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                            backgroundColor: ColorManager.primaryUi,
                             foregroundColor: Colors.white),
-                        child: Text('NO')),
+                        child: const Text('NO')),
                     ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(true),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white),
-                        child: Text('Exit')),
+                        child: const Text('Exit')),
                   ]);
             });
         if (value != null) {
@@ -83,7 +95,11 @@ class _DashBordState extends State<DashBord> {
               children: [
                 InkWell(
                   onTap: () {
-                    print(currentIndex);
+                    if (kDebugMode) {
+                      if (kDebugMode) {
+                        print(currentIndex);
+                      }
+                    }
                   },
                   child: CarouselSlider(
                     items: imageList
@@ -114,8 +130,12 @@ class _DashBordState extends State<DashBord> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: imageList.asMap().entries.map((entry) {
-                      print(entry);
-                      print(entry.key);
+                      if (kDebugMode) {
+                        print(entry);
+                      }
+                      if (kDebugMode) {
+                        print(entry.key);
+                      }
                       return GestureDetector(
                         onTap: () =>
                             carouselController.animateToPage(entry.key),
@@ -138,13 +158,14 @@ class _DashBordState extends State<DashBord> {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: TextFormField(
                 controller: _listName,
+                //validator: ,
                 decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -155,6 +176,7 @@ class _DashBordState extends State<DashBord> {
                         borderSide: BorderSide(
                             width: 2, color: ColorManager.primaryUi)),
                     hintText: "Add list name",
+
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -175,7 +197,7 @@ class _DashBordState extends State<DashBord> {
                     )),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Padding(
@@ -184,7 +206,7 @@ class _DashBordState extends State<DashBord> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'My shopping lists',
+                    StringManager.addShoppingList,
                     style: TextStyle(
                         color: ColorManager.primaryUi,
                         fontSize: 18,
@@ -193,28 +215,40 @@ class _DashBordState extends State<DashBord> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                  stream:
-                      FirebaseFirestore.instance.collection('list').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection("Wishlist")
+                      .where("uid",
+                      isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                      .snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) return CircularProgressIndicator();
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
                     //print("fsta : ${snapshot.data?.docs}");
                     return ListView.builder(
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, int index) {
+                          QueryDocumentSnapshot<Object?> documentsnapshot = snapshot.data!.docs.elementAt(index);
                           return Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 1, vertical: 1),
                             child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => TotalItems(),));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TotalItems(wid: documentsnapshot.id,
+                                        title: "${snapshot.data?.docs[index]['name']}",
+                                      ),
+                                    ));
                               },
                               child: Card(
-                                child: Container(
+                                child: SizedBox(
                                   height: 100,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -229,57 +263,76 @@ class _DashBordState extends State<DashBord> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              snapshot.data?.docs[index]
-                                                      ['name'].toString() ?? '',
-                                              style:
-                                                  TextStyle(color: Colors.black),
+                                              snapshot.data?.docs[index]['name']
+                                                      .toString() ??
+                                                  '',
+                                              style: const TextStyle(
+                                                  color: Colors.black),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 5,
                                             ),
-                                            // Text(
-                                            //   snapshot.data?.docs[index]
-                                            //           ['item_name'].toString() ??
-                                            //       '',
-                                            //   style: TextStyle(
-                                            //       color: ColorManager.primaryUi,
-                                            //       fontWeight: FontWeight.bold),
-                                            // ),//item name
                                           ],
                                         ),
-                                        Container(
-                                          child: Column(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 10,),
-                                                child: Container(
-                                                  width: 100,
-                                                  height: 100,
-                                                  color: ColorManager.dashContainer,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Text("totals",style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400)),
-                                                            SizedBox(width: 5,),
-                                                            Text(snapshot.data?.docs[index]['quantity'].toString() ?? ''),
-                                                          ],
-                                                        ),
-                                                        SizedBox(height: 3,),
-                                                          Text(snapshot.data?.docs[index]['total'].toString() ?? ''),
-                                                      ],
-                                                    ),
+                                        Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 10,
+                                              ),
+                                              child: Container(
+                                                width: 100,
+                                                height: 100,
+                                                color:
+                                                    ColorManager.dashContainer,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          const Text(
+                                                              StringManager
+                                                                  .total,
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400)),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          //FirebaseFirestore.instance.collection('list').doc('id')
+                                                          Text(snapshot
+                                                                  .data
+                                                                  ?.docs[index][
+                                                                      'quantity']
+                                                                  .toString() ??
+                                                              ''),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      Text(snapshot
+                                                              .data
+                                                              ?.docs[index]
+                                                                  ['total']
+                                                              .toString() ??
+                                                          ''),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
-
-                                            ],
-                                          )
-
+                                            ),
+                                          ],
                                         ), //totals cost
                                       ],
                                     ),
@@ -291,26 +344,23 @@ class _DashBordState extends State<DashBord> {
                         });
                   }),
             ),
-            Stack(
-              children: [],
-            )
           ],
         ),
         drawer: Drawer(
           child: ListView(
             padding: const EdgeInsets.all(0),
             children: [
-              const DrawerHeader(
+              DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.black,
                 ), //BoxDecoration
                 child: UserAccountsDrawerHeader(
                   decoration: BoxDecoration(color: Colors.black),
                   accountName: Text(
-                    "Harsh vaddoriya",
+                    "${_username}",
                     style: TextStyle(fontSize: 18),
                   ),
-                  accountEmail: Text("h"),
+                  accountEmail: Text('$user_email'),
                   currentAccountPictureSize: Size.square(50),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: Color.fromARGB(255, 255, 251, 251),
@@ -350,7 +400,7 @@ class _DashBordState extends State<DashBord> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ChangedPassword(),
+                        builder: (context) => const ChangedPassword(),
                       ));
                 },
               ),
@@ -369,32 +419,30 @@ class _DashBordState extends State<DashBord> {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return Container(
-                        child: AlertDialog(
-                          backgroundColor: Colors.white,
-                          title: Text("Are you sure ?"),
+                      return AlertDialog(
+                          title: const Text('Alert'),
+                          content: const Text('Do you want to exit app?'),
                           actions: [
-                            TextButton(
-                                onPressed: () async {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
-                                      ),
-                                      (route) => false);
-                                },
-                                child: Text("yes")),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("no"))
-                          ],
-                        ),
-                      );
+                            ElevatedButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: ColorManager.primaryUi,
+                                    foregroundColor: Colors.white),
+                                child: const Text('NO')),
+                            ElevatedButton(
+                                onPressed: () => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginPage(),
+                                    )),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    foregroundColor: Colors.white),
+                                child: const Text('Exit')),
+                          ]);
                     },
                   );
-                  ;
                 },
               ),
             ],
@@ -407,15 +455,15 @@ class _DashBordState extends State<DashBord> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                    onPressed: () {}, icon: Icon(Icons.location_on_outlined)),
+                    onPressed: () {},
+                    icon: const Icon(Icons.location_on_outlined)),
               ],
             )
           ],
         ),
         bottomNavigationBar: GNav(
-          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
           onTabChange: (val) {
-            currentIndex:
             index;
 
             setState(() {

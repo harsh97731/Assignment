@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:loginsin/ui/screens/home/DashBoard.dart';
+import 'package:loginsin/ui/screens/home/dash_board.dart';
 import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,20 +17,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       FirebaseAuth.instance.userChanges().listen((User? user) {
         if (user != null) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DashBord(),
-              ));
+         if(mounted){
+           Navigator.pushReplacement(
+               context,
+               MaterialPageRoute(
+                 builder: (context) => const DashBord(),
+               ));
+         }
         } else {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginPage(),
-              ));
+          if(mounted){
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(),
+                ));
+          }
         }
       });
     });
@@ -43,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: const <Widget>[
             Icon(Icons.ac_unit_outlined,color: Colors.black,size: 100,),
             SizedBox(height: 20,),
             SpinKitWave(

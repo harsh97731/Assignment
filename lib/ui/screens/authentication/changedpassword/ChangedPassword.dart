@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loginsin/ui/screens/home/DashBoard.dart';
-import 'package:loginsin/ui/screens/authentication/login/LoginPage.dart';
+import 'package:loginsin/resources/string_manager.dart';
+import 'package:loginsin/ui/screens/home/dash_board.dart';
+import 'package:loginsin/widgets/text_form_field.dart';
 
 class ChangedPassword extends StatefulWidget {
   const ChangedPassword({Key? key}) : super(key: key);
@@ -27,14 +27,16 @@ class _ChangedPasswordState extends State<ChangedPassword> {
     try {
       await currentUser!.updatePassword(newPassword);
      await FirebaseAuth.instance.signOut();
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => DashBord(),
+            builder: (context) => const DashBord(),
           ));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         backgroundColor: Colors.black26,
-        content: Text('your password has been changed.. Login again'),
+        content: Text(StringManager.yourpasswordhasbeenchanged),
       )
       );
     } catch (error) {
@@ -55,23 +57,7 @@ class _ChangedPasswordState extends State<ChangedPassword> {
           final value = await showDialog<bool>(
               context: context,
               builder: (context) {
-                return AlertDialog(
-                    title: Text('Alert'),
-                    content: Text('Do you want to exit app?'),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white),
-                          child: Text('NO')),
-                      ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white),
-                          child: Text('Exit')),
-                    ]);
+                return const AlertDialog();
               });
           if (value != null) {
             return Future.value(value);
@@ -83,19 +69,19 @@ class _ChangedPasswordState extends State<ChangedPassword> {
           backgroundColor: Colors.white,
           body: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 width: 70,
                 height: 70,
               ),
-              Center(
+              const Center(
                   child: Icon(
                 Icons.login_outlined,
                 size: 70,
               )),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'Change your Password',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -103,51 +89,24 @@ class _ChangedPasswordState extends State<ChangedPassword> {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  controller: newPasswordController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                      label: Text('Enter new password'),
-                      icon: Icon(Icons.mail_lock_outlined),
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26)),
-                      focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26)),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26))),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Required";
-                    }
-                    if (value.length < 6) {
-                      return "Password must be atleast 6 characters long";
-                    }
-                    if (value.length > 20) {
-                      return "Password must be less than 20 characters";
-                    }
-                    if (!value.contains(RegExp(r'[0-9]'))) {
-                      return "Password must contain a number";
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
+             TextFormFieldWidget(textController: newPasswordController, iconField: const Icon(Icons.email_outlined), labelText: const Text(StringManager.email), validator: (value) {
+               return null;
+
+
+             },),
+              const SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 1,
               ),
               Container(
-                margin: EdgeInsets.all(0),
+                margin: const EdgeInsets.all(0),
                 child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.black),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Submit',
                       style: TextStyle(fontSize: 20.0),
                     ),

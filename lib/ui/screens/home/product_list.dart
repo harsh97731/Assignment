@@ -5,10 +5,12 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:loginsin/resources/assets_manager.dart';
 import 'package:loginsin/resources/color_manager.dart';
-import 'package:loginsin/ui/screens/home/card_list.dart';
+import 'package:loginsin/widgets/card_list.dart';
 
 class TotalItems extends StatefulWidget {
-  const TotalItems({Key? key}) : super(key: key);
+  final String title ;
+  String wid;
+ TotalItems({Key? key, required this.title,required this.wid}) : super(key: key);
 
   @override
   State<TotalItems> createState() => _TotalItemsState();
@@ -24,7 +26,7 @@ class _TotalItemsState extends State<TotalItems> {
     return Scaffold(
       appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
-          title: const Text('Home', style: TextStyle(color: Colors.black)),
+          title: Text(widget.title,style: TextStyle(color: Colors.black),),
           backgroundColor: Colors.white,
           actions: const [
             Icon(
@@ -105,7 +107,7 @@ class _TotalItemsState extends State<TotalItems> {
                   query: ref,
                   defaultChild: Text("Loading"),
                   itemBuilder: (context, snapshot, animation, index) {
-                    return CardList(snapshot: snapshot);
+                    return CardList(wid: widget.wid,snapshot: snapshot);
                   },
                 ),
               ),
@@ -158,11 +160,35 @@ class _TotalItemsState extends State<TotalItems> {
                 child: Row(
                   children: [
                     Icon(Icons.shopping_cart),
-                    const SizedBox(width: 5,),
-                    const Text("totals",style: TextStyle(color: Colors.grey,fontSize: 10,fontWeight: FontWeight.w600),),
-                    const SizedBox(width: 2,),
-                    Text("100",style: TextStyle(color: ColorManager.primaryUi,fontSize: 12,fontWeight: FontWeight.bold,),),
-                    
+                    const SizedBox(width: 13,),
+                    Column(
+                      children: [
+                        const Text("Totals",style: TextStyle(color: Colors.black,fontSize: 8,),),
+
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("Wishlist")
+                              .doc(widget.wid)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var data = snapshot.data?.get("total");
+                              return Text(data.toString(),
+                                  style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold));
+                            } else {
+                              return Text("0",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ));
+                            }
+                          },
+                        )
+                      ],
+                    ),
+
+
 
 
                   ],
