@@ -32,7 +32,7 @@ class dbFirebase {
     }
   }
 
-  static createWishlistTotalAndQuantity (wid,total) async {
+  static createWishlistTotalAndQuantity (wid,total,prize) async {
     FirebaseFirestore firestore =
         FirebaseFirestore.instance;
     var dbqty = await firestore
@@ -51,7 +51,30 @@ class dbFirebase {
         .doc(wid)
         .update({
       "quantity": dbqty += 1,
-      "total": dbTotal += total
+      "total": dbTotal += prize
+    });
+  }
+
+  static removecreateWishlistTotalAndQuantity (wid,total,prize) async {
+    FirebaseFirestore firestore =
+        FirebaseFirestore.instance;
+    var dbqty = await firestore
+        .collection("Wishlist")
+        .doc(wid)
+        .get()
+        .then(
+            (value) => value.get("quantity"));
+    var dbTotal = await firestore
+        .collection("Wishlist")
+        .doc(wid)
+        .get()
+        .then((value) => value.get("total"));
+    await firestore
+        .collection("Wishlist")
+        .doc(wid)
+        .update({
+      "quantity": dbqty -= 1,
+      "total": dbTotal -= prize
     });
   }
 

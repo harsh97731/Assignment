@@ -26,7 +26,7 @@ class _TotalItemsState extends State<TotalItems> {
     return Scaffold(
       appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
-          title: Text(widget.title,style: TextStyle(color: Colors.black),),
+          title: Text(widget.title,style: const TextStyle(color: Colors.black),),
           backgroundColor: Colors.white,
           actions: const [
             Icon(
@@ -55,7 +55,7 @@ class _TotalItemsState extends State<TotalItems> {
                 child: Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
+                      SizedBox(
                           width :60,
                           height: 25,
                           child: Image.asset(ImageAssets.tesco)),
@@ -103,12 +103,15 @@ class _TotalItemsState extends State<TotalItems> {
                 ),
               ),             //add person
               Expanded(
-                child: FirebaseAnimatedList(
-                  query: ref,
-                  defaultChild: Text("Loading"),
-                  itemBuilder: (context, snapshot, animation, index) {
-                    return CardList(wid: widget.wid,snapshot: snapshot);
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 65),
+                  child: FirebaseAnimatedList(
+                    query: ref,
+                    defaultChild: const Text("Loading"),
+                    itemBuilder: (context, snapshot, animation, index) {
+                      return CardList(wid: widget.wid,snapshot: snapshot);
+                    },
+                  ),
                 ),
               ),
 
@@ -116,11 +119,12 @@ class _TotalItemsState extends State<TotalItems> {
           ),
           Positioned(
             bottom: 10,
-            left: 50,
-            right: 50,
+            left: 45,
+            right: 45,
+
             child: Container(
-              height: 40,
-              width: 280,
+              height: 50,
+              width: 300,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 color: ColorManager.primaryUi,
@@ -147,10 +151,10 @@ class _TotalItemsState extends State<TotalItems> {
           ),
           Positioned(
             bottom: 11,
-            left: 150,
+            left: 130,
             child: Container(
-              height: 38.5,
-              width: 100,
+              height: 50,
+              width: 110,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -159,12 +163,12 @@ class _TotalItemsState extends State<TotalItems> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Icon(Icons.shopping_cart),
+                    const Icon(Icons.shopping_cart),
                     const SizedBox(width: 13,),
                     Column(
                       children: [
                         const Text("Totals",style: TextStyle(color: Colors.black,fontSize: 8,),),
-
+                        const SizedBox(height: 4,),
                         StreamBuilder(
                           stream: FirebaseFirestore.instance
                               .collection("Wishlist")
@@ -174,11 +178,11 @@ class _TotalItemsState extends State<TotalItems> {
                             if (snapshot.hasData) {
                               var data = snapshot.data?.get("total");
                               return Text(data.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold));
                             } else {
-                              return Text("0",
+                              return const Text("0",
                                   style: TextStyle(
                                     fontSize: 10,
                                   ));

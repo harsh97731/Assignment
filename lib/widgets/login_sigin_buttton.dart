@@ -11,7 +11,7 @@ class LogSignButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LogSignButton(
+    return const LogSignButton(
 
       child: Text('signup'),
     );

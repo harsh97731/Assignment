@@ -22,10 +22,10 @@ class _DashBordState extends State<DashBord> {
   //var firestoreDB = FirebaseFirestore.instance.collection('Wishlist').snapshots();
   int index = 0;
   int counter = 0;
-
+  final _formKey = GlobalKey<FormState>();
   final String? _username = FirebaseAuth.instance.currentUser?.displayName;
-  final String? user_email = FirebaseAuth.instance.currentUser?.email;
-  final String? user_id = FirebaseAuth.instance.currentUser?.uid;
+  final String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  final String? userId = FirebaseAuth.instance.currentUser?.uid;
 
   final CarouselController carouselController = CarouselController();
   final _listName = TextEditingController();
@@ -36,9 +36,8 @@ class _DashBordState extends State<DashBord> {
       'name': _listName.text,
       'quantity': 0,
       'total': 0,
-      'uid': user_id,
+      'uid': userId,
     };
-
 
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('Wishlist');
@@ -77,7 +76,7 @@ class _DashBordState extends State<DashBord> {
                     ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(true),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                            backgroundColor: ColorManager.primaryUi,
                             foregroundColor: Colors.white),
                         child: const Text('Exit')),
                   ]);
@@ -163,38 +162,55 @@ class _DashBordState extends State<DashBord> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
-              child: TextFormField(
-                controller: _listName,
-                //validator: ,
-                decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                            width: 2, color: ColorManager.primaryUi)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                            width: 2, color: ColorManager.primaryUi)),
-                    hintText: "Add list name",
-
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: ColorManager.primaryUi,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              counter++;
-                              addData();
-                            },
-                            child: Icon(
-                              Icons.add,
-                              color: ColorManager.white,
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _listName,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2, color: ColorManager.primaryUi)),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2, color: ColorManager.primaryUi)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2, color: ColorManager.primaryUi)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2, color: ColorManager.primaryUi)),
+                      hintText: "Add list name",
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: ColorManager.primaryUi,
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                          )),
-                    )),
+                            child: InkWell(
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  addData();
+                                }
+                                _listName.clear();
+                              },
+                              child: Icon(
+                                Icons.add,
+                                color: ColorManager.white,
+                              ),
+                            )),
+                      )),
+                ),
               ),
             ),
             const SizedBox(
@@ -223,7 +239,7 @@ class _DashBordState extends State<DashBord> {
                   stream: FirebaseFirestore.instance
                       .collection("Wishlist")
                       .where("uid",
-                      isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                          isEqualTo: FirebaseAuth.instance.currentUser?.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -233,7 +249,8 @@ class _DashBordState extends State<DashBord> {
                     return ListView.builder(
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, int index) {
-                          QueryDocumentSnapshot<Object?> documentsnapshot = snapshot.data!.docs.elementAt(index);
+                          QueryDocumentSnapshot<Object?> documentsnapshot =
+                              snapshot.data!.docs.elementAt(index);
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 1, vertical: 1),
@@ -242,8 +259,10 @@ class _DashBordState extends State<DashBord> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TotalItems(wid: documentsnapshot.id,
-                                        title: "${snapshot.data?.docs[index]['name']}",
+                                      builder: (context) => TotalItems(
+                                        wid: documentsnapshot.id,
+                                        title:
+                                            "${snapshot.data?.docs[index]['name']}",
                                       ),
                                     ));
                               },
@@ -261,6 +280,8 @@ class _DashBordState extends State<DashBord> {
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Text(
                                               snapshot.data?.docs[index]['name']
@@ -272,6 +293,17 @@ class _DashBordState extends State<DashBord> {
                                             const SizedBox(
                                               height: 5,
                                             ),
+                                            InkWell(
+                                              onTap: (){
+                                                var wid = documentsnapshot.id;
+                                               FirebaseFirestore.instance.collection("Wishlist").doc(wid).delete();
+
+                                              },
+                                                child: Icon(
+                                              Icons.delete_outline_rounded,
+                                              size: 20,
+                                              color: ColorManager.primaryUi,
+                                            ))
                                           ],
                                         ),
                                         Column(
@@ -352,24 +384,16 @@ class _DashBordState extends State<DashBord> {
             children: [
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: ColorManager.primaryUi,
                 ), //BoxDecoration
                 child: UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(color: Colors.black),
+                  decoration: BoxDecoration(color: ColorManager.primaryUi),
                   accountName: Text(
-                    "${_username}",
-                    style: TextStyle(fontSize: 18),
+                    "Username: $_username,",
+                    style: const TextStyle(fontSize: 15),
                   ),
-                  accountEmail: Text('$user_email'),
-                  currentAccountPictureSize: Size.square(50),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 255, 251, 251),
-
-                    child: Text(
-                      "H",
-                      style: TextStyle(fontSize: 30.0, color: Colors.black),
-                    ), //Text
-                  ), //circleAvatar
+                  accountEmail: Text('Email: $userEmail'),
+                  currentAccountPictureSize: const Size.square(50),
                 ), //UserAccountDrawerHeader
               ), //DrawerHeader
               ListTile(
@@ -421,7 +445,7 @@ class _DashBordState extends State<DashBord> {
                     builder: (context) {
                       return AlertDialog(
                           title: const Text('Alert'),
-                          content: const Text('Do you want to exit app?'),
+                          content: const Text('Do you want to logout app?'),
                           actions: [
                             ElevatedButton(
                                 onPressed: () =>
@@ -437,9 +461,9 @@ class _DashBordState extends State<DashBord> {
                                       builder: (context) => const LoginPage(),
                                     )),
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
+                                    backgroundColor: ColorManager.primaryUi,
                                     foregroundColor: Colors.white),
-                                child: const Text('Exit')),
+                                child: const Text('yes')),
                           ]);
                     },
                   );

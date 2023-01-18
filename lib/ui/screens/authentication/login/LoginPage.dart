@@ -44,27 +44,27 @@ class _LoginPageState extends State<LoginPage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                    title: Text('Alert'),
-                    content: Text('Do you want to exit app?'),
+                    title: const Text('Alert'),
+                    content: const Text('Do you want to exit app?'),
                     actions: [
                       ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(false),
                           style: ElevatedButton.styleFrom(
                               backgroundColor: ColorManager.primaryUi,
                               foregroundColor: Colors.white),
-                          child: Text('NO')),
+                          child: const Text('NO')),
                       ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: ColorManager.primaryUi,
                               foregroundColor: Colors.white),
-                          child: Text('Exit')),
+                          child: const Text('Exit')),
                     ]);
               });
           if (value != null) {
             return Future.value(value);
           } else {
-            return Future.value(false);
+            return Future.value(true);
           }
         },
         child: Scaffold(

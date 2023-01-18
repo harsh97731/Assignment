@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:loginsin/db_services/firebase.dart';
 import 'package:loginsin/resources/assets_manager.dart';
 import 'package:loginsin/resources/color_manager.dart';
-import 'package:loginsin/user_preferences/user_preferences.dart';
 
 class CardList extends StatefulWidget {
   // String imageName;
@@ -54,6 +53,7 @@ class _CardListState extends State<CardList> {
       });
     }
   }
+  @override
   void initState() {
     getQuantity();
     // TODO: implement initState
@@ -62,6 +62,7 @@ class _CardListState extends State<CardList> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       child: SizedBox(
         height: 150,
         width: 100,
@@ -69,9 +70,9 @@ class _CardListState extends State<CardList> {
           children: [
             Stack(
               children: [
-                Container(
+                SizedBox(
                   height: 150,
-                  width: 130,
+                  width: 110,
                   child: ClipRRect(
                       child: Image.network(
                     widget.snapshot.child('image').value.toString(),
@@ -109,7 +110,7 @@ class _CardListState extends State<CardList> {
                         children: [
                           Icon(Icons.star,
                               color: ColorManager.primaryUi, size: 12),
-                          SizedBox(
+                          const SizedBox(
                             width: 2,
                           ),
                           Text("4.5",
@@ -127,20 +128,20 @@ class _CardListState extends State<CardList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  SizedBox(
                       width: 60,
                       height: 25,
                       child: Image.asset(ImageAssets.tesco)),
                   const SizedBox(
                     height: 3,
                   ),
-                  Text(widget.snapshot.child('desc').value.toString()),
+                  Text(widget.snapshot.child('pname',).value.toString(),style: const TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(
                     height: 8,
                   ),
-                  Text("(500 g - £5)",
+                  const Text("(500 g - £5)",
                       style: TextStyle(color: Colors.grey, fontSize: 13)),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Text(widget.snapshot.child('desc').value.toString(),
@@ -154,8 +155,8 @@ class _CardListState extends State<CardList> {
               padding: const EdgeInsets.only(top: 35, left: 5),
               child: Column(
                 children: [
-                  Text("6 x KG"),
-                  SizedBox(
+                  const Text("6 x KG"),
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
@@ -167,7 +168,7 @@ class _CardListState extends State<CardList> {
                               color: ColorManager.primaryUi)),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                   Container(
@@ -181,7 +182,17 @@ class _CardListState extends State<CardList> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () {
+                          onTap: () async{
+                          setState(() {
+                            if(qty >=1){
+                              qty -= 1;
+                              total =(widget.snapshot.child('prize').value as int) * qty;
+
+                             dbFirebase.createCart(qty, widget.wid, total, widget.snapshot.child('pid').value);
+                             dbFirebase.removecreateWishlistTotalAndQuantity(widget.wid,total,widget.snapshot.child('prize').value );
+                            }
+                          });
+
                           },
                           child: Icon(
                             Icons.remove_circle_outline_rounded,
@@ -198,8 +209,11 @@ class _CardListState extends State<CardList> {
                                   qty;
                             });
 
-                            dbFirebase.createCart(qty, widget.wid, total, widget.snapshot.child('pid').value);
-                            dbFirebase.createWishlistTotalAndQuantity(widget.wid, total);
+
+                                     dbFirebase.createCart(qty, widget.wid, total, widget.snapshot.child('pid').value);
+                                     dbFirebase.createWishlistTotalAndQuantity(widget.wid, total,widget.snapshot.child('prize').value);
+
+
                           },
                           child: Icon(
                             Icons.add_circle_outline_outlined,
